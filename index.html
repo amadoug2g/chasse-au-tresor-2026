@@ -15,7 +15,7 @@
   --surface:#ffffff;
   --surface2:#f0f0f0;
   --text:#111111;
-  --text-muted:#6b7280;
+  --text-muted:#595f6b;
   --border:#e5e7eb;
   --success:#16a34a;
   --danger:#dc2626;
@@ -28,7 +28,7 @@ html,body{
   background:var(--bg);color:var(--text);
   font-size:16px;line-height:1.5;
   -webkit-font-smoothing:antialiased;
-  overflow:hidden;
+
 }
 button{font-family:inherit;cursor:pointer;border:none;outline:none;-webkit-tap-highlight-color:transparent}
 input{font-family:inherit;outline:none;border:none}
@@ -41,9 +41,9 @@ input{font-family:inherit;outline:none;border:none}
 
 /* Common */
 .brand-title{font-size:28px;font-weight:800;text-align:center;margin-bottom:4px;color:var(--text)}
-.brand-subtitle{font-size:14px;color:var(--text-muted);text-align:center;margin-bottom:32px;letter-spacing:.5px;text-transform:uppercase}
+.brand-subtitle{font-size:14px;color:var(--text-muted);text-align:center;margin-bottom:32px;letter-spacing:.5px}
 .btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;border-radius:var(--radius);font-size:17px;font-weight:700;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.btn-primary{background:var(--brand);color:#fff}
+.btn-primary{background:var(--brand-dark);color:#fff}
 .btn-primary:active{background:var(--brand-dark)}
 .btn-secondary{background:var(--surface2);color:var(--text)}
 .btn-secondary:active{background:var(--border)}
@@ -58,7 +58,7 @@ input{font-family:inherit;outline:none;border:none}
 .link-btn{background:none;color:var(--text-muted);font-size:14px;text-decoration:underline;padding:12px}
 
 /* Home */
-#home{background:linear-gradient(180deg,#f97316 0%,#fb923c 40%,var(--bg) 40%);padding-top:0}
+#home{background:linear-gradient(180deg,#c2410c 0%,#ea580c 40%,var(--bg) 40%);padding-top:0}
 #home .logo-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:60px}
 #home .logo-icon{font-size:80px;margin-bottom:16px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.15))}
 #home .home-title{font-size:34px;font-weight:900;text-align:center;line-height:1.2;color:#fff}
@@ -85,16 +85,16 @@ input{font-family:inherit;outline:none;border:none}
 .chip .remove{color:var(--danger);font-weight:700;cursor:pointer;font-size:18px;line-height:1}
 .add-member-row{display:flex;gap:8px}
 .add-member-row .input-field{flex:1}
-.add-member-row button{width:52px;min-height:52px;border-radius:var(--radius-sm);background:var(--brand);color:#fff;font-size:24px;font-weight:700;flex-shrink:0}
+.add-member-row button{width:52px;min-height:52px;border-radius:var(--radius-sm);background:var(--brand-dark);color:#fff;font-size:24px;font-weight:700;flex-shrink:0}
 
 /* Play */
 #play .play-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 #play .team-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0}
 #play .team-label{font-size:15px;font-weight:600;flex:1}
-#play .step-label{font-size:13px;color:#fff;font-weight:600;background:var(--brand);padding:4px 12px;border-radius:20px}
+#play .step-label{font-size:13px;color:#5a1a00;font-weight:600;background:var(--brand);padding:4px 12px;border-radius:20px}
 .progress-track{width:100%;height:8px;background:var(--surface2);border-radius:4px;margin-bottom:20px;overflow:hidden}
-.progress-fill{height:100%;background:var(--brand);border-radius:3px;transition:width .5s ease}
-.enigma-card{background:var(--surface);border-radius:var(--radius);padding:24px 20px;margin-bottom:16px;flex:1;overflow-y:auto;box-shadow:0 2px 12px rgba(0,0,0,.06);border-top:4px solid var(--brand)}
+.progress-fill{height:100%;background:var(--brand);border-radius:3px;transform-origin:left;transition:transform .5s ease}
+.enigma-card{background:var(--surface);border-radius:var(--radius);padding:24px 20px;margin-bottom:16px;flex:1;overflow-y:auto;box-shadow:0 2px 12px rgba(0,0,0,.06)}
 .enigma-card .enigma-title{font-size:22px;font-weight:800;margin-bottom:12px}
 .enigma-card .enigma-text{font-size:17px;line-height:1.6;color:var(--text);white-space:pre-line}
 .enigma-card .enigma-hint{font-size:14px;color:var(--brand);margin-top:16px;font-style:italic}
@@ -103,22 +103,22 @@ input{font-family:inherit;outline:none;border:none}
 .answer-section .input-field{margin-bottom:10px}
 
 /* Scanner */
-.scanner-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:1000;display:none;flex-direction:column}
+.scanner-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);color:#fff;z-index:1000;display:none;flex-direction:column}
 .scanner-overlay.active{display:flex}
 .scanner-header{display:flex;align-items:center;padding:16px 20px;padding-top:calc(16px + env(safe-area-inset-top,0px))}
 .scanner-close{background:none;color:#fff;font-size:28px;padding:8px}
-.scanner-title{flex:1;text-align:center;font-size:17px;font-weight:600}
-.scanner-video-container{flex:1;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.scanner-title{flex:1;text-align:center;font-size:17px;font-weight:600;color:#fff}
+.scanner-video-container{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
 .scanner-video-container video{width:100%;height:100%;object-fit:cover}
 .scanner-video-container canvas{display:none}
 .scan-frame{position:absolute;width:250px;height:250px;border:3px solid var(--brand);border-radius:16px}
 .scan-line{position:absolute;width:230px;height:2px;background:var(--brand);animation:scanMove 2s ease-in-out infinite;box-shadow:0 0 12px var(--brand)}
 @keyframes scanMove{0%,100%{transform:translateY(-100px)}50%{transform:translateY(100px)}}
 .scanner-manual{padding:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
-.scanner-manual p{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:10px}
+.scanner-manual p{font-size:13px;color:#d1d5db;text-align:center;margin-bottom:10px}
 .scanner-manual .manual-row{display:flex;gap:8px}
-.scanner-manual .manual-row .input-field{flex:1}
-.scanner-manual .manual-row button{width:80px;min-height:52px;border-radius:var(--radius-sm);background:var(--brand);color:#fff;font-weight:700;font-size:15px}
+.scanner-manual .manual-row .input-field{flex:1;color:var(--text);background:var(--surface)}
+.scanner-manual .manual-row button{width:80px;min-height:52px;border-radius:var(--radius-sm);background:var(--brand-dark);color:#fff;font-weight:700;font-size:15px}
 
 /* Success overlay */
 .success-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.85);z-index:1100;display:none;flex-direction:column;align-items:center;justify-content:center}
@@ -137,7 +137,7 @@ input{font-family:inherit;outline:none;border:none}
 /* Admin */
 #org{align-items:center;justify-content:center}
 .admin-cards{display:flex;flex-direction:column;gap:14px;padding-bottom:80px;overflow-y:auto;flex:1}
-.admin-card{background:var(--surface);border-radius:var(--radius);overflow:hidden;border-top:4px solid;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.admin-card{background:var(--surface);border-radius:var(--radius);overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .admin-card-body{padding:16px}
 .admin-card .ac-name{font-size:18px;font-weight:700;margin-bottom:4px}
 .admin-card .ac-captain{font-size:14px;color:var(--text-muted);margin-bottom:2px}
@@ -150,7 +150,7 @@ input{font-family:inherit;outline:none;border:none}
 .admin-header .ah-title{font-size:22px;font-weight:800;flex:1}
 .admin-header .ah-btn{width:44px;height:44px;border-radius:50%;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:20px;position:relative}
 .badge{position:absolute;top:-2px;right:-2px;min-width:18px;height:18px;background:var(--danger);color:#fff;font-size:11px;font-weight:700;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
-.fab{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));right:20px;width:56px;height:56px;border-radius:50%;background:var(--brand);color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(249,115,22,.4);z-index:100}
+.fab{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));right:20px;width:56px;height:56px;border-radius:50%;background:var(--brand-dark);color:#fff;font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(249,115,22,.4);z-index:100}
 .fab:active{background:var(--brand-dark)}
 
 /* Modals */
@@ -362,12 +362,12 @@ input{font-family:inherit;outline:none;border:none}
 <!-- HELP MODAL -->
 <div class="modal" id="helpModal">
   <div class="modal-handle"></div>
-  <div class="modal-title">Besoin d'aide ?</div>
-  <div class="modal-body" style="text-align:center;padding-top:8px">
-    <p style="font-size:16px;margin-bottom:16px;color:var(--text-muted)">Pas de panique ! Regardez bien autour de vous, la réponse est proche.</p>
-    <p style="font-size:14px;margin-bottom:20px;color:var(--text-muted)">Si vous êtes vraiment bloqués, contactez l'organisateur :</p>
-    <a href="sms:+33600000000" class="btn btn-secondary" style="margin-bottom:10px;text-decoration:none">📱 Envoyer un SMS</a>
-    <a href="https://wa.me/33600000000" class="btn btn-primary" style="text-decoration:none" target="_blank">💬 WhatsApp</a>
+  <div class="modal-title">Demande d'aide</div>
+  <div class="modal-body" style="padding-top:8px">
+    <textarea id="helpMessage" class="input-field" style="min-height:100px;padding:12px 16px;resize:none" maxlength="200" placeholder="Décris ton problème..."></textarea>
+    <div style="text-align:right;font-size:12px;color:var(--text-muted);margin:4px 0 12px"><span id="helpCharCount">0</span>/200</div>
+    <button class="btn btn-primary" onclick="submitHelpRequest()" style="margin-bottom:10px">Envoyer aux organisateurs</button>
+    <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
   </div>
 </div>
 
@@ -547,9 +547,9 @@ function renderEnigma(){
   document.getElementById('playDot').style.background=state.teamColor;
   document.getElementById('playTeamName').textContent=state.teamName;
   document.getElementById('playStep').textContent='Énigme '+(step+1)+' sur '+state.totalSteps;
-  document.getElementById('playProgress').style.width=((step)/state.totalSteps*100)+'%';
+  document.getElementById('playProgress').style.transform='scaleX('+((step)/state.totalSteps)+')';
   const card=document.getElementById('enigmaCard');
-  card.style.borderTopColor=state.teamColor||'var(--brand)';
+  /* team color indicator handled via dot */
   if(enigma.imageOnly&&enigma.image){
     card.innerHTML='<div class="enigma-title">Énigme '+(step+1)+'</div><img class="enigma-img" src="'+enigma.image+'" alt="Énigme">';
   }else{
@@ -709,7 +709,7 @@ function renderAdminCards(teams){
   teams.forEach(t=>{
     const card=document.createElement('div');
     card.className='admin-card';
-    card.style.borderTopColor=t.color||'var(--brand)';
+    /* team color shown via dot indicator */
     const step=t.currentStep||0;const total=t.completedSteps!==undefined?10:10;
     const pct=(step/total*100);
     const membersStr=(t.members||[]).join(', ');
@@ -721,7 +721,7 @@ function renderAdminCards(teams){
       <div class="ac-name">${escHTML(t.name)}</div>
       <div class="ac-captain">${t.captain?(typeof t.captain==='object'?escHTML(t.captain.name||'N/A'):escHTML(t.captain)):'—'}${(t.captainPhone||(typeof t.captain==='object'&&t.captain.phone))?' · <a href="tel:'+escHTML(t.captainPhone||(typeof t.captain==='object'?t.captain.phone:''))+'">📞 '+escHTML(t.captainPhone||(typeof t.captain==='object'?t.captain.phone:''))+'</a>':''}</div>
       <div class="ac-members">${membersStr?escHTML(membersStr):'Pas de membres'}</div>
-      <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="progress-track"><div class="progress-fill" style="transform:scaleX(${pct/100})"></div></div>
       ${statusHTML}
       <div class="ac-footer"><div></div><button class="ac-delete" onclick="deleteTeam('${escHTML(t.id)}')">🗑️</button></div>
     </div>`;
@@ -828,7 +828,21 @@ async function createTeam(){
 
 /* ===== HELP ===== */
 function showHelpPanel(){
+  document.getElementById('helpMessage').value='';
+  document.getElementById('helpCharCount').textContent='0';
   openModal('helpModal');
+}
+document.addEventListener('input',function(e){
+  if(e.target.id==='helpMessage'){document.getElementById('helpCharCount').textContent=e.target.value.length;}
+});
+async function submitHelpRequest(){
+  const msg=document.getElementById('helpMessage').value.trim();
+  if(!msg){toast('Écris un message avant d\'envoyer.');return;}
+  try{
+    await api('/chasse/help',{method:'POST',body:{teamId:state.teamId,message:msg}});
+    closeModal();
+    toast('Message envoyé aux organisateurs ✅','success');
+  }catch(e){toast(e.message);}
 }
 
 /* ===== EDIT TEAM (during play) ===== */

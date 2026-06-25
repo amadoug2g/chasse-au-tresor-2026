@@ -317,6 +317,18 @@ app.delete('/api/chasse/state', chasseAdminAuth, (req, res) => {
   res.json({ ok:true });
 });
 
+// Public: participant sends help request → creates admin notification
+app.post('/api/chasse/help', (req, res) => {
+  const { teamId, message } = req.body || {};
+  const t = chasseState.teams[teamId];
+  const teamName = t ? t.name : (teamId || 'Équipe inconnue');
+  const captainName = t && t.captain ? t.captain.name : '';
+  const safeMsg = String(message || '').slice(0, 200);
+  pushNotif('help', teamId || '', `🆘 ${teamName}${captainName ? ` (${captainName})` : ''} demande de l'aide : "${safeMsg}"`);
+  saveChasseState();
+  res.json({ ok: true });
+});
+
 // ── WeezEvent sync ────────────────────────────────────────────────────────────
 
 // Manual sync — protected by secret token
