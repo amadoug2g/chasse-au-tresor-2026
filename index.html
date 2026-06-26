@@ -56,14 +56,15 @@ input{font-family:inherit;outline:none;border:none}
 .input-field::placeholder{color:var(--text-muted)}
 .spacer{flex:1}
 .link-btn{background:none;color:var(--text-muted);font-size:14px;text-decoration:underline;padding:12px}
+#home .link-btn{color:rgba(255,255,255,.75)}
 
 /* Home */
-#home{background:linear-gradient(180deg,#c2410c 0%,#ea580c 40%,var(--bg) 40%);padding-top:0}
+#home{background:linear-gradient(160deg,#7c2d00 0%,#c2410c 40%,#ea580c 75%,#f97316 100%);padding-top:0}
 #home .logo-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:60px}
 #home .logo-icon{font-size:80px;margin-bottom:16px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.15))}
 #home .home-title{font-size:34px;font-weight:900;text-align:center;line-height:1.2;color:#fff}
 #home .home-subtitle{font-size:18px;color:rgba(255,255,255,.9);text-align:center;margin-top:8px;font-weight:600}
-#home .bottom-area{padding:0 20px 8px;background:var(--bg);border-radius:var(--radius) var(--radius) 0 0;margin:-20px -20px 0;padding:24px 20px 8px}
+#home .bottom-area{background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);border-radius:var(--radius) var(--radius) 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom))}
 
 /* Join */
 .team-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
