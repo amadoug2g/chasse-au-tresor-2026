@@ -7,20 +7,25 @@
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --brand:#f97316;
-  --brand-dark:#c2410c;
-  --brand-light:#fff7ed;
-  --bg:#f5f5f5;
-  --surface:#ffffff;
-  --surface2:#f0f0f0;
-  --text:#111111;
-  --text-muted:#595f6b;
-  --border:#e5e7eb;
-  --success:#16a34a;
-  --danger:#dc2626;
-  --radius:16px;
-  --radius-sm:10px;
+:root {
+  --brand: #f97316;
+  --brand-dark: #c2410c;
+  --brand-light: #fff7ed;
+  --primary: #9d4300;
+  --primary-bright: #f97316;
+  --bg: #f8f6f3;
+  --surface: #f8f6f3;
+  --card: #ffffff;
+  --surface2: #f0ebe4;
+  --text: #0b1c30;
+  --text-muted: #8a7a70;
+  --border: #ece3dc;
+  --success: #1f9d55;
+  --danger: #ba1a1a;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 10px 30px -12px rgba(157,67,0,.28);
+  --shadow-sm: 0 4px 14px -8px rgba(11,28,48,.25);
 }
 html,body{
   height:100%;width:100%;
@@ -59,12 +64,16 @@ input{font-family:inherit;outline:none;border:none}
 #home .link-btn{color:rgba(255,255,255,.75)}
 
 /* Home */
-#home{background:linear-gradient(160deg,#7c2d00 0%,#c2410c 40%,#ea580c 75%,#f97316 100%);padding-top:0}
-#home .logo-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:60px}
-#home .logo-icon{font-size:80px;margin-bottom:16px;filter:drop-shadow(0 4px 12px rgba(0,0,0,.15))}
-#home .home-title{font-size:34px;font-weight:900;text-align:center;line-height:1.2;color:#fff}
-#home .home-subtitle{font-size:18px;color:rgba(255,255,255,.9);text-align:center;margin-top:8px;font-weight:600}
-#home .bottom-area{background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);border-radius:var(--radius) var(--radius) 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom))}
+#home{background:var(--bg);padding:0;position:relative;overflow:hidden;justify-content:center}
+#home .waves{position:absolute;inset:0;z-index:0;opacity:.5;pointer-events:none}
+#home .inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:40px 24px calc(32px + env(safe-area-inset-bottom));width:100%}
+#home .hero-logo{width:84px;height:84px;border-radius:24px;margin:0 auto 24px;display:grid;place-items:center;background:linear-gradient(135deg,var(--primary),var(--primary-bright));box-shadow:0 18px 40px -14px rgba(157,67,0,.5)}
+#home .hero-logo svg{width:46px;height:46px;color:#fff}
+#home h1.home-title{font-family:'Anybody',sans-serif;font-weight:900;font-size:44px;text-align:center;letter-spacing:-.04em;line-height:.95;color:var(--primary);margin:0 0 4px}
+#home h1.home-title span{display:block;color:var(--text);font-size:28px;font-weight:800}
+#home .home-tagline{text-align:center;font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;color:var(--text-muted);font-weight:700;text-transform:uppercase;margin:10px 0 36px}
+#home .btn-primary{background:linear-gradient(135deg,var(--primary),var(--primary-bright));color:#fff;box-shadow:var(--shadow)}
+#home .link-btn{color:var(--text-muted)}
 
 /* Join */
 .team-list{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
@@ -197,19 +206,28 @@ input{font-family:inherit;outline:none;border:none}
 .spinner{width:24px;height:24px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .6s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anybody:ital,wght@0,400;0,700;0,800;0,900;1,800&family=Public+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <!-- HOME -->
 <div id="home" class="view active">
-  <div class="logo-area">
-    <div class="logo-icon">🗺️</div>
-    <div class="home-title">Les Pilotes</div>
-    <div class="home-subtitle">Chasse au Trésor</div>
-  </div>
-  <div class="bottom-area">
-    <button class="btn btn-primary" onclick="showView('join')">Rejoindre mon équipe</button>
-    <div style="text-align:center;margin-top:12px">
+  <svg class="waves" viewBox="0 0 520 800" preserveAspectRatio="none" fill="none" stroke="#f0c9ad" stroke-width="1.5">
+    <path d="M-20 180 Q130 120 260 180 T540 180"/><path d="M-20 320 Q130 260 260 320 T540 320"/>
+    <path d="M-20 520 Q130 460 260 520 T540 520"/><path d="M-20 660 Q130 600 260 660 T540 660"/>
+  </svg>
+  <div class="inner">
+    <div class="hero-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+      </svg>
+    </div>
+    <h1 class="home-title">LES PILOTES<span>CHASSE AU TRÉSOR</span></h1>
+    <div class="home-tagline">Prends le contrôle de ton aventure</div>
+    <button class="btn btn-primary" style="width:100%;margin-bottom:12px" onclick="showView('join')">Rejoindre mon équipe ⚡</button>
+    <div style="text-align:center">
       <button class="link-btn" onclick="showView('org')">Organisateur</button>
     </div>
   </div>
