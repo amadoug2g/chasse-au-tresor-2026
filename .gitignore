@@ -1,0 +1,6 @@
+node_modules/
+test-results/
+playwright-report/
+chasse-state.json
+chasse-state.bak.json
+*.tmp
