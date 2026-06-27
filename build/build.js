@@ -9,6 +9,7 @@
 
 const fs   = require('fs');
 const path = require('path');
+const cp   = require('child_process');
 
 const ROOT = path.resolve(__dirname, '..');
 const SRC  = path.join(ROOT, 'src');
@@ -16,6 +17,17 @@ const SRC  = path.join(ROOT, 'src');
 function read(p)  { return fs.readFileSync(p, 'utf8'); }
 function write(p, content) { fs.writeFileSync(p, content, 'utf8'); }
 function exists(p) { try { fs.accessSync(p); return true; } catch(_) { return false; } }
+
+// Version info
+const { version } = JSON.parse(read(path.join(ROOT, 'package.json')));
+let commit = 'unknown';
+try { commit = cp.execSync('git rev-parse --short HEAD', { cwd: ROOT }).toString().trim(); } catch(_) {}
+const builtAt = new Date().toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+const versionLabel = `v${version} · ${commit} · ${builtAt}`;
+
+// Écrire chasse/build-info.json pour l'endpoint /api/chasse/version
+write(path.join(ROOT, 'chasse', 'build-info.json'), JSON.stringify({ version, commit, builtAt }, null, 2) + '\n');
+console.log(`[build] version ${versionLabel}`);
 
 // 1. Template
 let html = read(path.join(SRC, 'index.html'));
@@ -81,7 +93,12 @@ const jsOrder = ['core.js', 'join.js', 'play.js', 'scanner.js', 'help.js', 'team
 const appJs   = jsOrder.map(f => read(path.join(SRC, 'js', f))).join('\n\n');
 html = html.replace('/*INJECT:APP*/', appJs);
 
-// 8. Écriture
+// 8. Version dans le HTML
+html = html.replace('<!--INJECT:VERSION-->', versionLabel);
+// Commentaire lisible en view-source
+html = `<!-- chasse-au-tresor ${versionLabel} -->\n` + html;
+
+// 9. Écriture
 const outPath = path.join(ROOT, 'les-pilotes-v2.html');
 write(outPath, html);
 const sizeKb = (fs.statSync(outPath).size / 1024).toFixed(1);

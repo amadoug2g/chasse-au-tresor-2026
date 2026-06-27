@@ -30,6 +30,17 @@ function mountChasse(app) {
   app.use(express.json());
   st.load();
 
+  // Public: version déployée
+  app.get('/api/chasse/version', (req, res) => {
+    try {
+      const info = JSON.parse(require('fs').readFileSync(require('path').join(__dirname, 'build-info.json'), 'utf8'));
+      res.json(info);
+    } catch(_) {
+      const { version } = require('../package.json');
+      res.json({ version, commit: 'unknown', builtAt: 'unknown' });
+    }
+  });
+
   // Public: config (couleurs + équipes pour l'écran de sélection)
   app.get('/api/chasse/config', (req, res) => {
     const state = st.get();
