@@ -191,6 +191,10 @@ input{font-family:inherit;outline:none;border:none}
 .team-list-meta{font-size:13px;color:var(--text-muted);width:100%}
 .team-list-members{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;width:100%}
 .member-chip{display:inline-block;padding:2px 8px;background:var(--bg);border-radius:12px;font-size:12px;color:var(--text-muted)}
+.team-route{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;width:100%;align-items:center}
+.route-step{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:11px;font-weight:700;background:var(--bg);color:var(--text-muted);border:1px solid var(--border)}
+.route-step.done{background:#d1fae5;color:#065f46;border-color:#6ee7b7}
+.route-step.current{font-size:12px;box-shadow:0 0 0 2px currentColor}
 @media(min-width:600px){.kpi-row{grid-template-columns:repeat(4,1fr)}}
 
 /* Modals */

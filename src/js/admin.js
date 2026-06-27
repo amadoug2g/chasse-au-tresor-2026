@@ -163,6 +163,20 @@ function renderTabEquipes(body, teams) {
       members.forEach(m => { html += '<span class="member-chip">' + escHTML(m) + '</span>'; });
       html += '</div>';
     }
+    // Route : séquence des énigmes avec étape courante mise en valeur
+    if (t.route && t.route.length) {
+      const completed = new Set(t.completedSteps || []);
+      html += '<div class="team-route">';
+      t.route.forEach((enigmaNum, idx) => {
+        const stepNum = idx + 1;
+        const isCurrent = !t.finishedAt && stepNum === t.currentStep;
+        const isDone    = completed.has(stepNum) || t.finishedAt;
+        const cls = isCurrent ? 'route-step current' : isDone ? 'route-step done' : 'route-step';
+        const dotStyle = isCurrent ? 'background:' + escHTML(t.color || '#999') + ';color:#fff' : '';
+        html += '<span class="' + cls + '"' + (dotStyle ? ' style="' + dotStyle + '"' : '') + '>' + enigmaNum + '</span>';
+      });
+      html += '</div>';
+    }
     html += '</div>';
   });
   body.innerHTML = html;

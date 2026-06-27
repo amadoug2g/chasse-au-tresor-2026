@@ -1,4 +1,4 @@
-<!-- chasse-au-tresor v1.0.0 · 21803a3 · 2026-06-27 12:15 UTC -->
+<!-- chasse-au-tresor v1.0.0 · 5d10dee · 2026-06-27 18:25 UTC -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -200,6 +200,10 @@ input{font-family:inherit;outline:none;border:none}
 .team-list-meta{font-size:13px;color:var(--text-muted);width:100%}
 .team-list-members{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;width:100%}
 .member-chip{display:inline-block;padding:2px 8px;background:var(--bg);border-radius:12px;font-size:12px;color:var(--text-muted)}
+.team-route{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;width:100%;align-items:center}
+.route-step{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:11px;font-weight:700;background:var(--bg);color:var(--text-muted);border:1px solid var(--border)}
+.route-step.done{background:#d1fae5;color:#065f46;border-color:#6ee7b7}
+.route-step.current{font-size:12px;box-shadow:0 0 0 2px currentColor}
 @media(min-width:600px){.kpi-row{grid-template-columns:repeat(4,1fr)}}
 
 /* Modals */
@@ -348,7 +352,7 @@ input{font-family:inherit;outline:none;border:none}
 <!-- DASHBOARD -->
 <div id="dashboard" class="view" style="padding:0;padding-bottom:0">
   <div class="admin-header">
-    <div class="ah-title">LES PILOTES &middot; DASHBOARD <small id="appVersion" style="font-size:10px;opacity:.55;font-weight:400;margin-left:6px">v1.0.0 · 21803a3 · 2026-06-27 12:15 UTC</small></div>
+    <div class="ah-title">LES PILOTES &middot; DASHBOARD <small id="appVersion" style="font-size:10px;opacity:.55;font-weight:400;margin-left:6px">v1.0.0 · 5d10dee · 2026-06-27 18:25 UTC</small></div>
     <button class="ah-btn ah-btn-start" id="sessionBtn" onclick="toggleSession()">&#9654; DEMARRER</button>
     <button class="ah-btn ah-btn-quit" onclick="adminLogout()">Quitter</button>
   </div>
@@ -1211,6 +1215,20 @@ function renderTabEquipes(body, teams) {
     if (members.length) {
       html += '<div class="team-list-members">';
       members.forEach(m => { html += '<span class="member-chip">' + escHTML(m) + '</span>'; });
+      html += '</div>';
+    }
+    // Route : séquence des énigmes avec étape courante mise en valeur
+    if (t.route && t.route.length) {
+      const completed = new Set(t.completedSteps || []);
+      html += '<div class="team-route">';
+      t.route.forEach((enigmaNum, idx) => {
+        const stepNum = idx + 1;
+        const isCurrent = !t.finishedAt && stepNum === t.currentStep;
+        const isDone    = completed.has(stepNum) || t.finishedAt;
+        const cls = isCurrent ? 'route-step current' : isDone ? 'route-step done' : 'route-step';
+        const dotStyle = isCurrent ? 'background:' + escHTML(t.color || '#999') + ';color:#fff' : '';
+        html += '<span class="' + cls + '"' + (dotStyle ? ' style="' + dotStyle + '"' : '') + '>' + enigmaNum + '</span>';
+      });
       html += '</div>';
     }
     html += '</div>';
