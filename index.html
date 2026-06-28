@@ -1,4 +1,4 @@
-<!-- chasse-au-tresor v1.0.0 · fbcf249 · 2026-06-28 13:31 UTC -->
+<!-- chasse-au-tresor v1.0.0 · 203e940 · 2026-06-28 13:32 UTC -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -367,7 +367,7 @@ input{font-family:inherit;outline:none;border:none}
 <!-- DASHBOARD -->
 <div id="dashboard" class="view" style="padding:0;padding-bottom:0">
   <div class="admin-header">
-    <div class="ah-title">LES PILOTES &middot; DASHBOARD <small id="appVersion" style="font-size:10px;opacity:.55;font-weight:400;margin-left:6px">v1.0.0 · fbcf249 · 2026-06-28 13:31 UTC</small></div>
+    <div class="ah-title">LES PILOTES &middot; DASHBOARD <small id="appVersion" style="font-size:10px;opacity:.55;font-weight:400;margin-left:6px">v1.0.0 · 203e940 · 2026-06-28 13:32 UTC</small></div>
     <button class="ah-btn ah-btn-start" id="sessionBtn" onclick="toggleSession()">&#9654; DEMARRER</button>
     <button class="ah-btn ah-btn-quit" onclick="adminLogout()">Quitter</button>
   </div>
@@ -1190,12 +1190,13 @@ function _teamCard(t) {
   else if (t.finishedAt && t.startedAt) elapsed = formatDuration(new Date(t.finishedAt) - new Date(t.startedAt));
 
   let html = '<div class="admin-card"><div class="admin-card-body">';
-  html += '<div class="ac-name"><span class="ac-dot" style="background:' + escHTML(color) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
+  const dotBg = colorBg(t.color, t.color2, t.pattern);
+  html += '<div class="ac-name"><span class="ac-dot" style="background:' + escHTML(dotBg) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
   html += '<div class="ac-captain">' + escHTML(captain);
   if (phone) html += ' &middot; <a href="tel:' + escHTML(phone) + '">📞 ' + escHTML(phone) + '</a>';
   html += '</div><div style="margin:8px 0">' + badge + '</div>';
   html += '<div class="ac-status">' + status + '</div>';
-  html += '<div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="transform:scaleX(' + (pct / 100) + ');background:' + escHTML(color) + '"></div></div>';
+  html += '<div class="progress-track" style="margin-top:8px"><div class="progress-fill" style="transform:scaleX(' + (pct / 100) + ');background:' + escHTML(dotBg) + '"></div></div>';
   if (elapsed) html += '<div class="ac-elapsed">⏱ ' + elapsed + '</div>';
   html += '<div class="ac-footer">';
   html += '<button class="ac-detail-btn" onclick="showTeamMembers(\'' + escHTML(t.id || '') + '\')">Détails</button>';
@@ -1213,10 +1214,10 @@ function renderTabEquipes(body, teams) {
   let html = '<button class="btn btn-primary" onclick="openModal(\'addTeamModal\')" style="margin-bottom:16px;width:100%">+ Ajouter une équipe</button>';
   if (!teams.length) { html += '<p style="text-align:center;color:var(--text-muted)">Aucune équipe</p>'; }
   teams.forEach(t => {
-    const color   = t.color || '#999';
     const captain = typeof t.captain === 'object' ? (t.captain && t.captain.name || 'N/A') : (t.captain || '—');
+    const listDotBg = colorBg(t.color, t.color2, t.pattern);
     html += '<div class="team-list-item">';
-    html += '<div class="team-list-name"><span class="ac-dot" style="background:' + escHTML(color) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
+    html += '<div class="team-list-name"><span class="ac-dot" style="background:' + escHTML(listDotBg) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
     html += '<div style="display:flex;gap:6px">';
     html += '<button class="btn btn-secondary" style="min-height:32px;font-size:12px;padding:0 10px;width:auto" onclick="promptRenameTeam(\'' + escHTML(t.id) + '\',\'' + escHTML(t.name) + '\')">Renommer</button>';
     html += '<button class="ac-delete" onclick="deleteTeam(\'' + escHTML(t.id || '') + '\')">🗑️</button>';
@@ -1597,12 +1598,12 @@ async function renderColorGrid() {
   selectedColorId = null;
   try {
     const data       = await api('/config');
-    const usedColors = (data.teams || []).map(t => t.color);
+    const usedIds = new Set((data.teams || []).map(t => t.id));
     el.innerHTML = '';
     (data.colors || []).forEach(c => {
       const circle = document.createElement('div');
       circle.className = 'color-circle';
-      if (usedColors.includes(c.hex)) circle.classList.add('used');
+      if (usedIds.has(c.id)) circle.classList.add('used');
       circle.style.background = colorBg(c.hex, c.hex2, c.pattern);
       circle.onclick = () => {
         document.querySelectorAll('.color-circle').forEach(x => x.classList.remove('selected'));
