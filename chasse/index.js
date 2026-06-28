@@ -20,6 +20,11 @@ function pushNotif(type, teamId, message) {
   state.notifications = state.notifications.slice(0, 50);
 }
 
+function enrichColor(teamId) {
+  const c = TEAM_COLORS.find(x => x.id === teamId) || {};
+  return { color2: c.hex2 || null, pattern: c.pattern || 'solid' };
+}
+
 function chasseAdminAuth(req, res, next) {
   const pass = req.headers['x-admin-pass'] || req.query.adminPass;
   if (pass !== getAdminPass()) return res.status(403).json({ error: 'Forbidden' });
@@ -46,6 +51,7 @@ function mountChasse(app) {
     const state = st.get();
     const teams = Object.values(state.teams).map(t => ({
       id: t.id, name: t.name, color: t.color, colorName: t.colorName,
+      ...enrichColor(t.id),
       taken: !!(t.captain && t.captain.name),
     }));
     res.json({ teams, colors: TEAM_COLORS });
@@ -59,6 +65,7 @@ function mountChasse(app) {
     const display = currentDisplay(t, state.enigmaOverrides);
     res.json({
       id: t.id, name: t.name, color: t.color, colorName: t.colorName,
+      ...enrichColor(t.id),
       captain: t.captain, members: t.members,
       currentStep: t.currentStep, totalSteps: t.route.length,
       finished: !!t.finishedAt,
@@ -156,7 +163,8 @@ function mountChasse(app) {
   // Admin: liste complète des équipes
   app.get('/api/chasse/teams', chasseAdminAuth, (req, res) => {
     const state = st.get();
-    res.json({ teams: Object.values(state.teams) });
+    const teams = Object.values(state.teams).map(t => ({ ...t, ...enrichColor(t.id) }));
+    res.json({ teams });
   });
 
   // Admin: créer une équipe

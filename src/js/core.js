@@ -3,7 +3,7 @@
 let state = {
   teamId: null, captainName: '', captainPhone: '', members: [],
   currentStep: 0, totalSteps: 10,
-  teamName: '', teamColor: '', finished: false,
+  teamName: '', teamColor: '', teamColor2: null, teamPattern: 'solid', finished: false,
 };
 let selectedTeamId  = null;
 let adminPass       = '';
@@ -21,6 +21,14 @@ function escHTML(s) {
 }
 
 function normQR(c) { return (c || '').trim().toUpperCase(); }
+
+// Retourne la valeur CSS background pour un bracelet (uni ou rayé)
+function colorBg(hex, hex2, pattern) {
+  if (pattern === 'stripe' && hex2) {
+    return 'repeating-linear-gradient(45deg,' + hex + ' 0,' + hex + ' 6px,' + hex2 + ' 6px,' + hex2 + ' 12px)';
+  }
+  return hex;
+}
 
 function toast(msg, type) {
   const t = document.getElementById('toast');
@@ -59,7 +67,7 @@ function clearSession() {
   state = {
     teamId: null, captainName: '', captainPhone: '', members: [],
     currentStep: 0, totalSteps: 10,
-    teamName: '', teamColor: '', finished: false,
+    teamName: '', teamColor: '', teamColor2: null, teamPattern: 'solid', finished: false,
   };
 }
 

@@ -11,7 +11,7 @@ async function loadTeams() {
     data.teams.forEach(t => {
       const btn = document.createElement('button');
       btn.className = 'team-btn' + (t.taken ? ' is-taken' : '');
-      btn.innerHTML = `<div class="dot" style="background:${escHTML(t.color)}"></div><div class="tname">${escHTML(t.name)}</div>${t.taken ? '<span class="taken-badge">Prise</span>' : ''}`;
+      btn.innerHTML = `<div class="dot" style="background:${escHTML(colorBg(t.color, t.color2, t.pattern))}"></div><div class="tname">${escHTML(t.name)}</div>${t.taken ? '<span class="taken-badge">Prise</span>' : ''}`;
       if (!t.taken) btn.onclick = () => selectTeam(t, btn);
       el.appendChild(btn);
     });
@@ -27,9 +27,11 @@ function selectTeam(t, btn) {
   });
   btn.classList.add('selected');
   btn.style.setProperty('--team-select-color', t.color);
-  selectedTeamId  = t.id;
-  state.teamColor = t.color;
-  state.teamName  = t.name;
+  selectedTeamId     = t.id;
+  state.teamColor    = t.color;
+  state.teamColor2   = t.color2   || null;
+  state.teamPattern  = t.pattern  || 'solid';
+  state.teamName     = t.name;
   document.getElementById('joinForm').style.display = 'block';
   document.getElementById('joinForm').scrollIntoView({ behavior: 'smooth' });
 }

@@ -4,16 +4,16 @@
 // Ne jamais exposer ce fichier au client.
 
 const TEAM_COLORS = [
-  { id: 'rouge',       name: 'Rouge',            hex: '#dc2626' },
-  { id: 'orange',      name: 'Orange',           hex: '#ea580c' },
-  { id: 'orange-raye', name: 'Orange rayé',      hex: '#f97316' },
-  { id: 'jaune-fluo',  name: 'Jaune fluo',       hex: '#d4f000' },
-  { id: 'vert-raye',   name: 'Vert rayé',        hex: '#22c55e' },
-  { id: 'bleu-ciel',   name: 'Bleu ciel',        hex: '#38bdf8' },
-  { id: 'bleu-marine', name: 'Bleu marine rayé', hex: '#1e40af' },
-  { id: 'bleu-rose',   name: 'Bleu & Rose',      hex: '#6366f1' },
-  { id: 'rose-raye',   name: 'Rose rayé',        hex: '#f472b6' },
-  { id: 'marron',      name: 'Marron',           hex: '#44403c' },
+  { id: 'rouge',       name: 'Rouge',             hex: '#ef4444',                   pattern: 'solid'  },
+  { id: 'orange',      name: 'Orange',            hex: '#f97316',                   pattern: 'solid'  },
+  { id: 'orange-raye', name: 'Orange rayé',       hex: '#f97316', hex2: '#fde047',  pattern: 'stripe' },
+  { id: 'jaune-fluo',  name: 'Jaune fluo',        hex: '#d4f000',                   pattern: 'solid'  },
+  { id: 'vert-raye',   name: 'Vert rayé',         hex: '#22c55e', hex2: '#a3e635',  pattern: 'stripe' },
+  { id: 'bleu-ciel',   name: 'Bleu ciel',         hex: '#38bdf8',                   pattern: 'solid'  },
+  { id: 'bleu-marine', name: 'Bleu marine rayé',  hex: '#1e40af', hex2: '#ffffff',  pattern: 'stripe' },
+  { id: 'bleu-rose',   name: 'Bleu & rose rayé',  hex: '#1e40af', hex2: '#f43f5e',  pattern: 'stripe' },
+  { id: 'rose-raye',   name: 'Rose rayé',         hex: '#f43f5e', hex2: '#ffffff',  pattern: 'stripe' },
+  { id: 'marron',      name: 'Marron',            hex: '#292524',                   pattern: 'solid'  },
 ];
 
 const ENIGMAS = [
