@@ -200,6 +200,11 @@ input{font-family:inherit;outline:none;border:none}
 .enigma-preview-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;font-size:12px;flex-shrink:0}
 .enigma-preview-text{font-size:13px;color:var(--text-muted);white-space:pre-wrap;line-height:1.5}
 .enigma-preview-hint{font-size:12px;color:#92400e;background:#fef3c7;border-radius:6px;padding:6px 10px;margin-top:8px}
+.enigma-scan-tester{background:var(--surface2);border-radius:var(--radius);padding:14px;margin-bottom:16px}
+.enigma-test-input{flex:1;min-height:42px;background:var(--surface);color:var(--text);border:2px solid var(--border);border-radius:8px;padding:0 12px;font-size:14px;min-width:0}
+.enigma-test-result{font-size:14px;font-weight:600;min-height:22px}
+.enigma-test-result.success{color:#16a34a}
+.enigma-test-result.error{color:var(--danger)}
 @media(min-width:600px){.kpi-row{grid-template-columns:repeat(4,1fr)}}
 
 /* Modals */

@@ -116,6 +116,11 @@ function mountChasse(app) {
     res.json({ ok: true, finished: !!t.finishedAt, display });
   });
 
+  // Admin: liste des énigmes avec QR (pour vérification terrain)
+  app.get('/api/chasse/admin/enigmas', chasseAdminAuth, (req, res) => {
+    res.json({ enigmas: ENIGMAS.map(e => ({ n: e.n, title: e.title || '', qr: e.qr })) });
+  });
+
   // Admin: liste complète des équipes
   app.get('/api/chasse/teams', chasseAdminAuth, (req, res) => {
     const state = st.get();

@@ -53,6 +53,7 @@ function updateSessionBtn() {
 
 /* Onglets */
 function switchAdminTab(el) {
+  stopAdminScan();
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   activeAdminTab = el.getAttribute('data-tab');
@@ -183,9 +184,35 @@ function renderTabEquipes(body, teams) {
 }
 
 /* ---- Énigmes ---- */
+let _enigmaQrData = null;
+let _adminScanStream = null;
+let _adminScanLoop = null;
+
+async function _fetchEnigmaQrData() {
+  if (_enigmaQrData) return _enigmaQrData;
+  try {
+    const data = await api('/admin/enigmas', { admin: true });
+    _enigmaQrData = data.enigmas || [];
+    return _enigmaQrData;
+  } catch(_) { return []; }
+}
+
 function renderTabEnigmes(body) {
+  if (_adminScanStream) return; // Ne pas interrompre un scan en cours
   if (typeof ENIGMAS_DISPLAY === 'undefined') { body.innerHTML = '<p>Données indisponibles</p>'; return; }
-  let html = '';
+  let html = '<div class="enigma-scan-tester">';
+  html += '<div style="font-weight:700;font-size:14px;margin-bottom:10px">🔍 Vérifier un QR code</div>';
+  html += '<div style="display:flex;gap:8px;margin-bottom:8px">';
+  html += '<button class="btn btn-secondary" id="adminScanBtn" style="min-height:42px;width:auto;padding:0 14px;flex-shrink:0" onclick="startAdminScan()">📷 Scanner</button>';
+  html += '<input id="adminQrInput" class="enigma-test-input" type="text" placeholder="…ou colle le code ici" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" onkeydown="if(event.key===\'Enter\')verifyAdminQr()">';
+  html += '<button class="btn btn-primary" style="min-height:42px;width:auto;padding:0 14px;flex-shrink:0" onclick="verifyAdminQr()">OK</button>';
+  html += '</div>';
+  html += '<div id="adminScanArea" style="display:none;margin-bottom:8px;position:relative">';
+  html += '<video id="adminScanVideo" playsinline autoplay muted style="width:100%;border-radius:8px;display:block"></video>';
+  html += '<button onclick="stopAdminScan()" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:20px;padding:6px 12px;font-size:13px;cursor:pointer">✕ Arrêter</button>';
+  html += '</div>';
+  html += '<div id="adminQrResult" class="enigma-test-result"></div>';
+  html += '</div>';
   ENIGMAS_DISPLAY.forEach(e => {
     html += '<div class="enigma-preview-card">';
     html += '<div class="enigma-preview-header"><span class="enigma-preview-num">' + e.n + '</span>' + escHTML(e.title || '(image)') + '</div>';
@@ -200,6 +227,80 @@ function renderTabEnigmes(body) {
     html += '</div>';
   });
   body.innerHTML = html;
+  _fetchEnigmaQrData(); // précharge silencieusement
+}
+
+async function verifyAdminQr() {
+  const input  = document.getElementById('adminQrInput');
+  const result = document.getElementById('adminQrResult');
+  if (!input || !result) return;
+  const code = (input.value || '').trim();
+  if (!code) { result.textContent = ''; result.className = 'enigma-test-result'; return; }
+  result.textContent = '⏳…';
+  result.className = 'enigma-test-result';
+  const qrList = await _fetchEnigmaQrData();
+  if (!qrList.length) { result.textContent = '❌ Données inaccessibles'; result.className = 'enigma-test-result error'; return; }
+  const found = qrList.find(q => q.qr.toUpperCase() === code.toUpperCase());
+  if (found) {
+    const display = (typeof ENIGMAS_DISPLAY !== 'undefined') ? ENIGMAS_DISPLAY.find(e => e.n === found.n) : null;
+    const title   = display && display.title ? ' — ' + escHTML(display.title) : '';
+    result.innerHTML = '✅ Énigme ' + found.n + title;
+    result.className = 'enigma-test-result success';
+  } else {
+    result.textContent = '❌ Code non reconnu';
+    result.className = 'enigma-test-result error';
+  }
+}
+
+async function startAdminScan() {
+  const area  = document.getElementById('adminScanArea');
+  const video = document.getElementById('adminScanVideo');
+  if (!area || !video) return;
+  try {
+    _adminScanStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+    video.srcObject = _adminScanStream;
+    area.style.display = 'block';
+    const btn = document.getElementById('adminScanBtn');
+    if (btn) btn.style.display = 'none';
+    _adminScanLoop = requestAnimationFrame(_scanAdminFrame);
+  } catch(e) {
+    const msg = e.name === 'NotAllowedError' ? 'Permission caméra refusée' : 'Caméra indisponible : ' + e.message;
+    toast(msg);
+  }
+}
+
+function _scanAdminFrame() {
+  const video = document.getElementById('adminScanVideo');
+  if (!video || !_adminScanStream) return;
+  if (video.readyState >= 2) {
+    const canvas = document.createElement('canvas');
+    canvas.width  = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+    try {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const code = typeof jsQR === 'function'
+        ? jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' })
+        : null;
+      if (code && code.data) {
+        stopAdminScan();
+        const input = document.getElementById('adminQrInput');
+        if (input) { input.value = code.data; verifyAdminQr(); }
+        return;
+      }
+    } catch(_) {}
+  }
+  _adminScanLoop = requestAnimationFrame(_scanAdminFrame);
+}
+
+function stopAdminScan() {
+  if (_adminScanLoop) { cancelAnimationFrame(_adminScanLoop); _adminScanLoop = null; }
+  if (_adminScanStream) { _adminScanStream.getTracks().forEach(t => t.stop()); _adminScanStream = null; }
+  const area = document.getElementById('adminScanArea');
+  if (area) area.style.display = 'none';
+  const btn = document.getElementById('adminScanBtn');
+  if (btn) btn.style.display = '';
 }
 
 /* ---- Alertes ---- */
