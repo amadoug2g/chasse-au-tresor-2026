@@ -1,4 +1,4 @@
-<!-- chasse-au-tresor v1.0.0 · 203e940 · 2026-06-28 13:32 UTC -->
+<!-- chasse-au-tresor v1.0.0 · e812ad4 · 2026-06-28 13:33 UTC -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -367,7 +367,7 @@ input{font-family:inherit;outline:none;border:none}
 <!-- DASHBOARD -->
 <div id="dashboard" class="view" style="padding:0;padding-bottom:0">
   <div class="admin-header">
-    <div class="ah-title">LES PILOTES &middot; DASHBOARD <small id="appVersion" style="font-size:10px;opacity:.55;font-weight:400;margin-left:6px">v1.0.0 · 203e940 · 2026-06-28 13:32 UTC</small></div>
+    <div class="ah-title">LES PILOTES &middot; DASHBOARD <small id="appVersion" style="font-size:10px;opacity:.55;font-weight:400;margin-left:6px">v1.0.0 · e812ad4 · 2026-06-28 13:33 UTC</small></div>
     <button class="ah-btn ah-btn-start" id="sessionBtn" onclick="toggleSession()">&#9654; DEMARRER</button>
     <button class="ah-btn ah-btn-quit" onclick="adminLogout()">Quitter</button>
   </div>
@@ -1211,7 +1211,9 @@ function _teamCard(t) {
 
 /* ---- Équipes ---- */
 function renderTabEquipes(body, teams) {
-  let html = '<button class="btn btn-primary" onclick="openModal(\'addTeamModal\')" style="margin-bottom:16px;width:100%">+ Ajouter une équipe</button>';
+  let html = teams.length < 10
+    ? '<button class="btn btn-primary" onclick="openModal(\'addTeamModal\')" style="margin-bottom:16px;width:100%">+ Ajouter une équipe</button>'
+    : '<p style="text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:16px">10/10 équipes — toutes les couleurs sont attribuées</p>';
   if (!teams.length) { html += '<p style="text-align:center;color:var(--text-muted)">Aucune équipe</p>'; }
   teams.forEach(t => {
     const captain = typeof t.captain === 'object' ? (t.captain && t.captain.name || 'N/A') : (t.captain || '—');
