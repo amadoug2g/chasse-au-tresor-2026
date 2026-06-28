@@ -69,20 +69,6 @@ describe('currentDisplay — anti-off-by-one', () => {
       }
     }
   });
-  it('hasAnswer vrai pour énigme 5', () => {
-    for (let idx = 0; idx < 10; idx++) {
-      const route = genRoute(idx);
-      const stepFor5 = route.indexOf(5) + 1;
-      if (stepFor5 > 0) {
-        const team = { route, currentStep: stepFor5, completedSteps: [], finishedAt: null };
-        const d = currentDisplay(team);
-        assert.equal(d.hasAnswer, true);
-        assert.ok(!('answer' in d), 'answer ne doit PAS figurer dans display');
-        assert.ok(!('qr' in d),     'qr ne doit PAS figurer dans display');
-        break;
-      }
-    }
-  });
   it('progressPct = 0 au départ, 50 à mi-chemin, 100 terminé', () => {
     const t0 = makeTeam(0, 1, 0);
     assert.equal(currentDisplay(t0).progressPct, 0);

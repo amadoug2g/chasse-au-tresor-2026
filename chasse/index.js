@@ -94,20 +94,10 @@ function mountChasse(app) {
     const enigmaNum = t.route[step - 1];
     const enigma    = ENIGMAS.find(e => e.n === enigmaNum);
 
-    if (answer !== undefined) {
-      // Validation par réponse texte (ex. énigme 5)
-      if (!enigma || !enigma.hasAnswer) {
-        return res.json({ ok: false, message: 'Cette énigme ne nécessite pas de réponse' });
-      }
-      if (String(answer).trim().toLowerCase() !== String(enigma.answer).toLowerCase()) {
-        return res.json({ ok: false, message: 'Mauvaise réponse, essaie encore !' });
-      }
-    } else {
-      // Validation par QR code
-      const expected = ENIGMA_QR[enigmaNum - 1];
-      if ((qrCode || '').trim().toUpperCase() !== expected.toUpperCase()) {
-        return res.json({ ok: false, message: "Code incorrect — ce n'est pas le bon endroit !" });
-      }
+    // Validation par QR code uniquement
+    const expected = ENIGMA_QR[enigmaNum - 1];
+    if ((qrCode || '').trim().toUpperCase() !== expected.toUpperCase()) {
+      return res.json({ ok: false, message: "Code incorrect — ce n'est pas le bon endroit !" });
     }
 
     // Avancer l'étape

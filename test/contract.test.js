@@ -24,14 +24,10 @@ describe('Contrat données (anti-divergence)', () => {
     const nums = ENIGMAS.map(e => e.n).sort((a,b) => a-b);
     assert.deepEqual(nums, [1,2,3,4,5,6,7,8,9,10]);
   });
-  it('Énigme 5 a hasAnswer + answer, pas les autres', () => {
+  it('Aucune énigme n\'a hasAnswer (scan QR uniquement)', () => {
     ENIGMAS.forEach(e => {
-      if (e.n === 5) {
-        assert.ok(e.hasAnswer, 'énigme 5 doit avoir hasAnswer');
-        assert.ok(e.answer,    'énigme 5 doit avoir answer');
-      } else {
-        assert.ok(!e.hasAnswer, `énigme ${e.n} ne doit pas avoir hasAnswer`);
-      }
+      assert.ok(!e.hasAnswer, `énigme ${e.n} ne doit pas avoir hasAnswer`);
+      assert.ok(!e.answer,    `énigme ${e.n} ne doit pas avoir answer`);
     });
   });
   it('Énigmes 8,9,10 sont isImageOnly avec imageRef', () => {
@@ -41,8 +37,8 @@ describe('Contrat données (anti-divergence)', () => {
       assert.equal(e.imageRef, n);
     });
   });
-  it('TEAM_COLORS a exactement 20 couleurs', () => {
-    assert.equal(TEAM_COLORS.length, 20);
+  it('TEAM_COLORS a exactement 10 couleurs', () => {
+    assert.equal(TEAM_COLORS.length, 10);
   });
   it('IDs de couleur uniques', () => {
     const ids = TEAM_COLORS.map(c => c.id);

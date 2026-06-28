@@ -103,9 +103,9 @@ describe('Parcours complet (10 étapes) — test anti-off-by-one', () => {
 
   before(async () => {
     // Créer une 2ème équipe pour ce test
-    const r = await req('POST', `${base}/api/chasse/teams`, { colorId: 'bleu', name: 'Test Bleu' }, { 'x-admin-pass': ADMIN });
+    const r = await req('POST', `${base}/api/chasse/teams`, { colorId: 'bleu-ciel', name: 'Test Bleu' }, { 'x-admin-pass': ADMIN });
     assert.equal(r.body.ok, true);
-    teamId = 'bleu';
+    teamId = 'bleu-ciel';
     // Rejoindre
     await req('POST', `${base}/api/chasse/join`, { teamId, captainName: 'Alice', captainPhone: '0600000000', members: [] });
   });
@@ -159,33 +159,6 @@ describe('Parcours complet (10 étapes) — test anti-off-by-one', () => {
   });
 });
 
-describe('Énigme 5 — réponse texte serveur', () => {
-  before(async () => {
-    await req('POST', `${base}/api/chasse/teams`, { colorId: 'vert', name: 'Test Vert' }, { 'x-admin-pass': ADMIN });
-    await req('POST', `${base}/api/chasse/join`, { teamId: 'vert', captainName: 'Bob', captainPhone: '0600000001', members: [] });
-  });
-
-  it('mauvaise réponse texte → ok:false', async () => {
-    // Avancer jusqu'à l\'énigme 5
-    const route = genRoute(2); // index 2
-    const step5pos = route.indexOf(5);
-    // Avancer jusqu'à la position de l'énigme 5
-    for (let i = 0; i < step5pos; i++) {
-      const enigmaNum = route[i];
-      await req('POST', `${base}/api/chasse/validate`, { teamId: 'vert', qrCode: ENIGMA_QR[enigmaNum - 1] });
-    }
-    // Maintenant on est sur l'énigme 5
-    const r = await req('POST', `${base}/api/chasse/validate`, { teamId: 'vert', answer: '61' });
-    assert.equal(r.body.ok, false);
-    assert.match(r.body.message, /mauvaise/i);
-  });
-
-  it('bonne réponse "60" → ok:true', async () => {
-    const r = await req('POST', `${base}/api/chasse/validate`, { teamId: 'vert', answer: '60' });
-    assert.equal(r.body.ok, true);
-    assert.equal(r.body.display.finished, false);
-  });
-});
 
 describe('Renommer équipe', () => {
   it('admin peut renommer', async () => {
@@ -201,8 +174,8 @@ describe('Renommer équipe', () => {
 
 describe('Supprimer équipe', () => {
   it('admin peut supprimer', async () => {
-    await req('POST', `${base}/api/chasse/teams`, { colorId: 'jaune' }, { 'x-admin-pass': ADMIN });
-    const r = await req('DELETE', `${base}/api/chasse/teams/jaune`, null, { 'x-admin-pass': ADMIN });
+    await req('POST', `${base}/api/chasse/teams`, { colorId: 'jaune-fluo' }, { 'x-admin-pass': ADMIN });
+    const r = await req('DELETE', `${base}/api/chasse/teams/jaune-fluo`, null, { 'x-admin-pass': ADMIN });
     assert.equal(r.body.ok, true);
   });
 });
@@ -216,14 +189,14 @@ describe('Aide', () => {
 
 describe('Admin advance (secours)', () => {
   before(async () => {
-    await req('POST', `${base}/api/chasse/teams`, { colorId: 'violet' }, { 'x-admin-pass': ADMIN });
-    await req('POST', `${base}/api/chasse/join`, { teamId: 'violet', captainName: 'Carol', captainPhone: '0600000002', members: [] });
+    await req('POST', `${base}/api/chasse/teams`, { colorId: 'orange-raye' }, { 'x-admin-pass': ADMIN });
+    await req('POST', `${base}/api/chasse/join`, { teamId: 'orange-raye', captainName: 'Carol', captainPhone: '0600000002', members: [] });
   });
 
   it('avancer une équipe d\'une étape', async () => {
-    const before = await req('GET', `${base}/api/chasse/session/violet`);
+    const before = await req('GET', `${base}/api/chasse/session/orange-raye`);
     assert.equal(before.body.currentStep, 1);
-    const r = await req('POST', `${base}/api/chasse/admin/advance`, { teamId: 'violet' }, { 'x-admin-pass': ADMIN });
+    const r = await req('POST', `${base}/api/chasse/admin/advance`, { teamId: 'orange-raye' }, { 'x-admin-pass': ADMIN });
     assert.equal(r.body.ok, true);
     assert.equal(r.body.currentStep, 2);
   });

@@ -28,8 +28,7 @@ const ENIGMAS_DISPLAY = [
     "n": 5,
     "title": "Le poteau mystère",
     "text": "Je suis le numéro du poteau. Mon chiffre des dizaines est 6 et mon chiffre des unités est 0. Qui suis-je ?",
-    "hint": "Cherche le poteau numéroté 60.",
-    "hasAnswer": true
+    "hint": "Cherche le poteau numéroté 60."
   },
   {
     "n": 6,

@@ -4,28 +4,16 @@
 // Ne jamais exposer ce fichier au client.
 
 const TEAM_COLORS = [
-  // 10 couleurs originales
-  { id: 'rouge',     name: 'Rouge',      hex: '#dc2626' },
-  { id: 'bleu',      name: 'Bleu',       hex: '#2563eb' },
-  { id: 'vert',      name: 'Vert',       hex: '#16a34a' },
-  { id: 'jaune',     name: 'Jaune',      hex: '#ca8a04' },
-  { id: 'violet',    name: 'Violet',     hex: '#7c3aed' },
-  { id: 'orange',    name: 'Orange',     hex: '#ea580c' },
-  { id: 'rose',      name: 'Rose',       hex: '#db2777' },
-  { id: 'noir',      name: 'Noir',       hex: '#374151' },
-  { id: 'cyan',      name: 'Cyan',       hex: '#0891b2' },
-  { id: 'marron',    name: 'Marron',     hex: '#92400e' },
-  // 10 nouvelles (⚠️ ajuster selon les bracelets achetés)
-  { id: 'blanc',     name: 'Blanc',      hex: '#d1d5db' },
-  { id: 'gris',      name: 'Gris',       hex: '#6b7280' },
-  { id: 'turquoise', name: 'Turquoise',  hex: '#0d9488' },
-  { id: 'indigo',    name: 'Indigo',     hex: '#4338ca' },
-  { id: 'lime',      name: 'Lime',       hex: '#65a30d' },
-  { id: 'emeraude',  name: 'Émeraude',   hex: '#059669' },
-  { id: 'ambre',     name: 'Ambre',      hex: '#d97706' },
-  { id: 'lilas',     name: 'Lilas',      hex: '#9333ea' },
-  { id: 'bleu-ciel', name: 'Bleu ciel',  hex: '#0284c7' },
-  { id: 'or',        name: 'Or',         hex: '#b45309' },
+  { id: 'rouge',       name: 'Rouge',            hex: '#dc2626' },
+  { id: 'orange',      name: 'Orange',           hex: '#ea580c' },
+  { id: 'orange-raye', name: 'Orange rayé',      hex: '#f97316' },
+  { id: 'jaune-fluo',  name: 'Jaune fluo',       hex: '#d4f000' },
+  { id: 'vert-raye',   name: 'Vert rayé',        hex: '#22c55e' },
+  { id: 'bleu-ciel',   name: 'Bleu ciel',        hex: '#38bdf8' },
+  { id: 'bleu-marine', name: 'Bleu marine rayé', hex: '#1e40af' },
+  { id: 'bleu-rose',   name: 'Bleu & Rose',      hex: '#6366f1' },
+  { id: 'rose-raye',   name: 'Rose rayé',        hex: '#f472b6' },
+  { id: 'marron',      name: 'Marron',           hex: '#44403c' },
 ];
 
 const ENIGMAS = [
@@ -63,8 +51,6 @@ const ENIGMAS = [
     text: 'Je suis le numéro du poteau. Mon chiffre des dizaines est 6 et mon chiffre des unités est 0. Qui suis-je ?',
     hint: 'Cherche le poteau numéroté 60.',
     qr: 'PILOTES-ENIGME-5',
-    hasAnswer: true,
-    answer: '60',
   },
   {
     n: 6,
