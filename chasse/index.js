@@ -117,8 +117,8 @@ function mountChasse(app) {
     if (t.currentStep > t.route.length) {
       t.finishedAt = new Date().toISOString();
       pushNotif('finish', teamId, `🏆 ${t.name} a terminé la chasse !`);
-    } else if ([25, 50, 75].includes(pct)) {
-      pushNotif('milestone', teamId, `${t.name} à ${pct}% — étape ${t.completedSteps.length}/${t.route.length}`);
+    } else {
+      pushNotif('milestone', teamId, `📍 ${t.name} — énigme ${t.completedSteps.length}/${t.route.length} validée`);
     }
     st.save();
 

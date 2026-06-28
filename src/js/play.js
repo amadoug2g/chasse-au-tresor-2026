@@ -50,21 +50,9 @@ function renderDisplay(display) {
     let html = '<div class="enigma-title">' + escHTML(display.title || display.stepLabel) + '</div>';
     html += '<div class="enigma-text">' + escHTML(display.text || '') + '</div>';
     html += '<div style="margin-top:16px"><button class="btn btn-secondary" style="min-height:40px;font-size:14px" onclick="showHelpPanel()">Besoin d\'aide ?</button></div>';
-    if (display.hasAnswer) {
-      html += '<div class="answer-section"><input class="input-field" id="answerInput" placeholder="Ta réponse"><button class="btn btn-secondary" style="margin-top:10px" onclick="checkAnswer()">Vérifier</button></div>';
-      scanBtn.style.display = 'none';
-    } else {
-      scanBtn.style.display = 'flex';
-    }
+    scanBtn.style.display = 'flex';
     card.innerHTML = html;
   }
-}
-
-// Réponse texte (énigme 5) — validation 100% serveur
-async function checkAnswer() {
-  const val = document.getElementById('answerInput') ? document.getElementById('answerInput').value.trim() : '';
-  if (!val) { toast('Entre ta réponse'); return; }
-  await _doValidate({ teamId: state.teamId, answer: val });
 }
 
 // Validation QR code
