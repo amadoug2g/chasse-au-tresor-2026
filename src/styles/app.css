@@ -195,6 +195,11 @@ input{font-family:inherit;outline:none;border:none}
 .route-step{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:11px;font-weight:700;background:var(--bg);color:var(--text-muted);border:1px solid var(--border)}
 .route-step.done{background:#d1fae5;color:#065f46;border-color:#6ee7b7}
 .route-step.current{font-size:12px;box-shadow:0 0 0 2px currentColor}
+.enigma-preview-card{background:var(--surface);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.enigma-preview-header{font-weight:700;font-size:15px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.enigma-preview-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;font-size:12px;flex-shrink:0}
+.enigma-preview-text{font-size:13px;color:var(--text-muted);white-space:pre-wrap;line-height:1.5}
+.enigma-preview-hint{font-size:12px;color:#92400e;background:#fef3c7;border-radius:6px;padding:6px 10px;margin-top:8px}
 @media(min-width:600px){.kpi-row{grid-template-columns:repeat(4,1fr)}}
 
 /* Modals */

@@ -1,4 +1,4 @@
-<!-- chasse-au-tresor v1.0.0 · 44ff59e · 2026-06-28 11:47 UTC -->
+<!-- chasse-au-tresor v1.0.0 · 83105e4 · 2026-06-28 11:49 UTC -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -204,6 +204,11 @@ input{font-family:inherit;outline:none;border:none}
 .route-step{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-size:11px;font-weight:700;background:var(--bg);color:var(--text-muted);border:1px solid var(--border)}
 .route-step.done{background:#d1fae5;color:#065f46;border-color:#6ee7b7}
 .route-step.current{font-size:12px;box-shadow:0 0 0 2px currentColor}
+.enigma-preview-card{background:var(--surface);border-radius:var(--radius);padding:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.enigma-preview-header{font-weight:700;font-size:15px;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.enigma-preview-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--primary);color:#fff;font-size:12px;flex-shrink:0}
+.enigma-preview-text{font-size:13px;color:var(--text-muted);white-space:pre-wrap;line-height:1.5}
+.enigma-preview-hint{font-size:12px;color:#92400e;background:#fef3c7;border-radius:6px;padding:6px 10px;margin-top:8px}
 @media(min-width:600px){.kpi-row{grid-template-columns:repeat(4,1fr)}}
 
 /* Modals */
@@ -352,7 +357,7 @@ input{font-family:inherit;outline:none;border:none}
 <!-- DASHBOARD -->
 <div id="dashboard" class="view" style="padding:0;padding-bottom:0">
   <div class="admin-header">
-    <div class="ah-title">LES PILOTES &middot; DASHBOARD <small id="appVersion" style="font-size:10px;opacity:.55;font-weight:400;margin-left:6px">v1.0.0 · 44ff59e · 2026-06-28 11:47 UTC</small></div>
+    <div class="ah-title">LES PILOTES &middot; DASHBOARD <small id="appVersion" style="font-size:10px;opacity:.55;font-weight:400;margin-left:6px">v1.0.0 · 83105e4 · 2026-06-28 11:49 UTC</small></div>
     <button class="ah-btn ah-btn-start" id="sessionBtn" onclick="toggleSession()">&#9654; DEMARRER</button>
     <button class="ah-btn ah-btn-quit" onclick="adminLogout()">Quitter</button>
   </div>
@@ -1226,11 +1231,20 @@ function renderTabEquipes(body, teams) {
 /* ---- Énigmes ---- */
 function renderTabEnigmes(body) {
   if (typeof ENIGMAS_DISPLAY === 'undefined') { body.innerHTML = '<p>Données indisponibles</p>'; return; }
-  let html = '<div style="overflow-x:auto"><table class="enigma-table"><thead><tr><th>#</th><th>Titre</th></tr></thead><tbody>';
+  let html = '';
   ENIGMAS_DISPLAY.forEach(e => {
-    html += '<tr><td><strong>' + e.n + '</strong></td><td>' + escHTML(e.title || '(image)') + '</td></tr>';
+    html += '<div class="enigma-preview-card">';
+    html += '<div class="enigma-preview-header"><span class="enigma-preview-num">' + e.n + '</span>' + escHTML(e.title || '(image)') + '</div>';
+    if (e.isImageOnly && e.imageRef) {
+      const img = document.getElementById('enigma-img-' + e.imageRef);
+      if (img) html += '<img src="' + img.src + '" style="width:100%;border-radius:6px;margin-top:8px" alt="Énigme ' + e.n + '">';
+      else html += '<p style="color:var(--text-muted);font-size:13px">Image non trouvée</p>';
+    } else if (e.text) {
+      html += '<div class="enigma-preview-text">' + escHTML(e.text) + '</div>';
+    }
+    if (e.hint) html += '<div class="enigma-preview-hint">💡 ' + escHTML(e.hint) + '</div>';
+    html += '</div>';
   });
-  html += '</tbody></table></div>';
   body.innerHTML = html;
 }
 

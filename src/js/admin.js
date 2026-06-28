@@ -185,11 +185,20 @@ function renderTabEquipes(body, teams) {
 /* ---- Énigmes ---- */
 function renderTabEnigmes(body) {
   if (typeof ENIGMAS_DISPLAY === 'undefined') { body.innerHTML = '<p>Données indisponibles</p>'; return; }
-  let html = '<div style="overflow-x:auto"><table class="enigma-table"><thead><tr><th>#</th><th>Titre</th></tr></thead><tbody>';
+  let html = '';
   ENIGMAS_DISPLAY.forEach(e => {
-    html += '<tr><td><strong>' + e.n + '</strong></td><td>' + escHTML(e.title || '(image)') + '</td></tr>';
+    html += '<div class="enigma-preview-card">';
+    html += '<div class="enigma-preview-header"><span class="enigma-preview-num">' + e.n + '</span>' + escHTML(e.title || '(image)') + '</div>';
+    if (e.isImageOnly && e.imageRef) {
+      const img = document.getElementById('enigma-img-' + e.imageRef);
+      if (img) html += '<img src="' + img.src + '" style="width:100%;border-radius:6px;margin-top:8px" alt="Énigme ' + e.n + '">';
+      else html += '<p style="color:var(--text-muted);font-size:13px">Image non trouvée</p>';
+    } else if (e.text) {
+      html += '<div class="enigma-preview-text">' + escHTML(e.text) + '</div>';
+    }
+    if (e.hint) html += '<div class="enigma-preview-hint">💡 ' + escHTML(e.hint) + '</div>';
+    html += '</div>';
   });
-  html += '</tbody></table></div>';
   body.innerHTML = html;
 }
 
