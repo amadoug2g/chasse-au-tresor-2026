@@ -126,7 +126,7 @@ function _teamCard(t) {
   else if (t.finishedAt && t.startedAt) elapsed = formatDuration(new Date(t.finishedAt) - new Date(t.startedAt));
 
   let html = '<div class="admin-card"><div class="admin-card-body">';
-  html += '<div class="ac-name"><span class="ac-dot" style="background:' + escHTML(colorBg(color, t.color2, t.pattern)) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
+  html += '<div class="ac-name"><span class="ac-dot" style="background:' + escHTML(color) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
   html += '<div class="ac-captain">' + escHTML(captain);
   if (phone) html += ' &middot; <a href="tel:' + escHTML(phone) + '">📞 ' + escHTML(phone) + '</a>';
   html += '</div><div style="margin:8px 0">' + badge + '</div>';
@@ -152,7 +152,7 @@ function renderTabEquipes(body, teams) {
     const color   = t.color || '#999';
     const captain = typeof t.captain === 'object' ? (t.captain && t.captain.name || 'N/A') : (t.captain || '—');
     html += '<div class="team-list-item">';
-    html += '<div class="team-list-name"><span class="ac-dot" style="background:' + escHTML(colorBg(color, t.color2, t.pattern)) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
+    html += '<div class="team-list-name"><span class="ac-dot" style="background:' + escHTML(color) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
     html += '<div style="display:flex;gap:6px">';
     html += '<button class="btn btn-secondary" style="min-height:32px;font-size:12px;padding:0 10px;width:auto" onclick="promptRenameTeam(\'' + escHTML(t.id) + '\',\'' + escHTML(t.name) + '\')">Renommer</button>';
     html += '<button class="ac-delete" onclick="deleteTeam(\'' + escHTML(t.id || '') + '\')">🗑️</button>';

@@ -1,4 +1,4 @@
-<!-- chasse-au-tresor v1.0.0 · e683d00 · 2026-06-28 13:22 UTC -->
+<!-- chasse-au-tresor v1.0.0 · 8a67b52 · 2026-06-28 13:28 UTC -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -367,7 +367,7 @@ input{font-family:inherit;outline:none;border:none}
 <!-- DASHBOARD -->
 <div id="dashboard" class="view" style="padding:0;padding-bottom:0">
   <div class="admin-header">
-    <div class="ah-title">LES PILOTES &middot; DASHBOARD <small id="appVersion" style="font-size:10px;opacity:.55;font-weight:400;margin-left:6px">v1.0.0 · e683d00 · 2026-06-28 13:22 UTC</small></div>
+    <div class="ah-title">LES PILOTES &middot; DASHBOARD <small id="appVersion" style="font-size:10px;opacity:.55;font-weight:400;margin-left:6px">v1.0.0 · 8a67b52 · 2026-06-28 13:28 UTC</small></div>
     <button class="ah-btn ah-btn-start" id="sessionBtn" onclick="toggleSession()">&#9654; DEMARRER</button>
     <button class="ah-btn ah-btn-quit" onclick="adminLogout()">Quitter</button>
   </div>
@@ -699,7 +699,7 @@ async function loadTeams() {
     data.teams.forEach(t => {
       const btn = document.createElement('button');
       btn.className = 'team-btn' + (t.taken ? ' is-taken' : '');
-      btn.innerHTML = `<div class="dot" style="background:${escHTML(colorBg(t.color, t.color2, t.pattern))}"></div><div class="tname">${escHTML(t.name)}</div>${t.taken ? '<span class="taken-badge">Prise</span>' : ''}`;
+      btn.innerHTML = `<div class="dot" style="background:${escHTML(t.color)}"></div><div class="tname">${escHTML(t.name)}</div>${t.taken ? '<span class="taken-badge">Prise</span>' : ''}`;
       if (!t.taken) btn.onclick = () => selectTeam(t, btn);
       el.appendChild(btn);
     });
@@ -715,11 +715,9 @@ function selectTeam(t, btn) {
   });
   btn.classList.add('selected');
   btn.style.setProperty('--team-select-color', t.color);
-  selectedTeamId     = t.id;
-  state.teamColor    = t.color;
-  state.teamColor2   = t.color2   || null;
-  state.teamPattern  = t.pattern  || 'solid';
-  state.teamName     = t.name;
+  selectedTeamId  = t.id;
+  state.teamColor = t.color;
+  state.teamName  = t.name;
   document.getElementById('joinForm').style.display = 'block';
   document.getElementById('joinForm').scrollIntoView({ behavior: 'smooth' });
 }
@@ -790,8 +788,6 @@ async function loadSession() {
     const data = await api('/session/' + state.teamId);
     state.teamName    = data.name;
     state.teamColor   = data.color;
-    state.teamColor2  = data.color2  || null;
-    state.teamPattern = data.pattern || 'solid';
     state.currentStep = data.currentStep;
     state.totalSteps  = data.totalSteps;
     state.finished    = !!data.finished;
@@ -819,7 +815,7 @@ function renderDisplay(display) {
   if (!display) return;
   window._currentDisplay = display;
 
-  document.getElementById('playDot').style.background    = colorBg(state.teamColor, state.teamColor2, state.teamPattern);
+  document.getElementById('playDot').style.background    = state.teamColor;
   document.getElementById('playTeamName').textContent    = state.teamName;
   document.getElementById('playStep').textContent        = display.stepLabel;
   document.getElementById('playProgress').style.transform = 'scaleX(' + (display.progressPct / 100) + ')';
@@ -1194,7 +1190,7 @@ function _teamCard(t) {
   else if (t.finishedAt && t.startedAt) elapsed = formatDuration(new Date(t.finishedAt) - new Date(t.startedAt));
 
   let html = '<div class="admin-card"><div class="admin-card-body">';
-  html += '<div class="ac-name"><span class="ac-dot" style="background:' + escHTML(colorBg(color, t.color2, t.pattern)) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
+  html += '<div class="ac-name"><span class="ac-dot" style="background:' + escHTML(color) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
   html += '<div class="ac-captain">' + escHTML(captain);
   if (phone) html += ' &middot; <a href="tel:' + escHTML(phone) + '">📞 ' + escHTML(phone) + '</a>';
   html += '</div><div style="margin:8px 0">' + badge + '</div>';
@@ -1220,7 +1216,7 @@ function renderTabEquipes(body, teams) {
     const color   = t.color || '#999';
     const captain = typeof t.captain === 'object' ? (t.captain && t.captain.name || 'N/A') : (t.captain || '—');
     html += '<div class="team-list-item">';
-    html += '<div class="team-list-name"><span class="ac-dot" style="background:' + escHTML(colorBg(color, t.color2, t.pattern)) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
+    html += '<div class="team-list-name"><span class="ac-dot" style="background:' + escHTML(color) + '"></span>' + escHTML(t.name || 'Sans nom') + '</div>';
     html += '<div style="display:flex;gap:6px">';
     html += '<button class="btn btn-secondary" style="min-height:32px;font-size:12px;padding:0 10px;width:auto" onclick="promptRenameTeam(\'' + escHTML(t.id) + '\',\'' + escHTML(t.name) + '\')">Renommer</button>';
     html += '<button class="ac-delete" onclick="deleteTeam(\'' + escHTML(t.id || '') + '\')">🗑️</button>';
