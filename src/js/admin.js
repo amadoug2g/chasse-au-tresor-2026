@@ -147,9 +147,7 @@ function _teamCard(t) {
 
 /* ---- Équipes ---- */
 function renderTabEquipes(body, teams) {
-  let html = teams.length < 10
-    ? '<button class="btn btn-primary" onclick="openModal(\'addTeamModal\')" style="margin-bottom:16px;width:100%">+ Ajouter une équipe</button>'
-    : '<p style="text-align:center;font-size:13px;color:var(--text-muted);margin-bottom:16px">10/10 équipes — toutes les couleurs sont attribuées</p>';
+  let html = '<button class="btn btn-primary" onclick="openModal(\'addTeamModal\')" style="margin-bottom:16px;width:100%">+ Ajouter une équipe</button>';
   if (!teams.length) { html += '<p style="text-align:center;color:var(--text-muted)">Aucune équipe</p>'; }
   teams.forEach(t => {
     const captain = typeof t.captain === 'object' ? (t.captain && t.captain.name || 'N/A') : (t.captain || '—');
