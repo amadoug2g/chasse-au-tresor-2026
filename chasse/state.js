@@ -7,14 +7,15 @@ function getStateFile() {
   return process.env.CHASSE_STATE_FILE || path.join(__dirname, '..', 'chasse-state.json');
 }
 
-let _state = { teams: {}, notifications: [] };
+let _state = { teams: {}, notifications: [], enigmaOverrides: {} };
 
 function load() {
   try {
     _state = JSON.parse(fs.readFileSync(getStateFile(), 'utf8'));
+    if (!_state.enigmaOverrides) _state.enigmaOverrides = {};
     console.log(`[chasse] State loaded: ${Object.keys(_state.teams).length} teams`);
   } catch (_) {
-    _state = { teams: {}, notifications: [] };
+    _state = { teams: {}, notifications: [], enigmaOverrides: {} };
   }
 }
 
@@ -35,6 +36,6 @@ function save() {
 
 function get() { return _state; }
 
-function reset() { _state = { teams: {}, notifications: [] }; }
+function reset() { _state = { teams: {}, notifications: [], enigmaOverrides: {} }; }
 
 module.exports = { load, save, get, reset };

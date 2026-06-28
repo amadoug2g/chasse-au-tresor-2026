@@ -205,6 +205,11 @@ input{font-family:inherit;outline:none;border:none}
 .enigma-test-result{font-size:14px;font-weight:600;min-height:22px}
 .enigma-test-result.success{color:#16a34a}
 .enigma-test-result.error{color:var(--danger)}
+.enigma-edit-btn{margin-left:auto;background:none;border:none;font-size:16px;cursor:pointer;padding:2px 6px;border-radius:6px;opacity:.7}
+.enigma-edit-btn:active{background:var(--surface2);opacity:1}
+.enigma-edit-form{margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+.enigma-edit-label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.enigma-edit-textarea{width:100%;min-height:90px;background:var(--surface);color:var(--text);border:2px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px;font-family:inherit;line-height:1.5;resize:vertical;margin-bottom:10px}
 @media(min-width:600px){.kpi-row{grid-template-columns:repeat(4,1fr)}}
 
 /* Modals */

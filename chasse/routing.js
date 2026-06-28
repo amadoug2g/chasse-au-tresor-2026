@@ -18,7 +18,8 @@ function expectedQrForStep(team) {
 
 // Autorité unique d'affichage : calcule l'objet display à envoyer au client.
 // Ne contient jamais de qr ni answer.
-function currentDisplay(team) {
+// enigmaOverrides : objet keyed par n → {title,text,hint} partiel (depuis state)
+function currentDisplay(team, enigmaOverrides) {
   if (team.finishedAt) {
     return {
       finished: true,
@@ -30,8 +31,9 @@ function currentDisplay(team) {
   }
   const step = team.currentStep;           // 1-based
   const enigmaNum = team.route[step - 1];  // 0-based index dans route
-  const enigma = ENIGMAS.find(e => e.n === enigmaNum);
-  if (!enigma) throw new Error(`Enigme ${enigmaNum} introuvable (step=${step})`);
+  const base = ENIGMAS.find(e => e.n === enigmaNum);
+  if (!base) throw new Error(`Enigme ${enigmaNum} introuvable (step=${step})`);
+  const ov = (enigmaOverrides || {})[enigmaNum] || {};
 
   return {
     finished: false,
@@ -39,12 +41,12 @@ function currentDisplay(team) {
     stepIndex: step,
     totalSteps: team.route.length,
     enigmaNum,
-    title: enigma.title || '',
-    text: enigma.text || '',
-    hint: enigma.hint || '',
-    isImageOnly: !!enigma.isImageOnly,
-    imageRef: enigma.imageRef || null,
-    hasAnswer: !!enigma.hasAnswer,
+    title:      ov.title !== undefined ? ov.title : (base.title || ''),
+    text:       ov.text  !== undefined ? ov.text  : (base.text  || ''),
+    hint:       ov.hint  !== undefined ? ov.hint  : (base.hint  || ''),
+    isImageOnly: !!base.isImageOnly,
+    imageRef: base.imageRef || null,
+    hasAnswer: !!base.hasAnswer,
     progressPct: Math.round(team.completedSteps.length / team.route.length * 100),
   };
 }

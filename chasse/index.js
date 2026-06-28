@@ -56,7 +56,7 @@ function mountChasse(app) {
     const state = st.get();
     const t = state.teams[req.params.teamId];
     if (!t) return res.status(404).json({ error: 'Équipe introuvable' });
-    const display = currentDisplay(t);
+    const display = currentDisplay(t, state.enigmaOverrides);
     res.json({
       id: t.id, name: t.name, color: t.color, colorName: t.colorName,
       captain: t.captain, members: t.members,
@@ -112,13 +112,45 @@ function mountChasse(app) {
     }
     st.save();
 
-    const display = currentDisplay(t);
+    const display = currentDisplay(t, state.enigmaOverrides);
     res.json({ ok: true, finished: !!t.finishedAt, display });
   });
 
-  // Admin: liste des énigmes avec QR (pour vérification terrain)
+  // Admin: liste des énigmes (avec overrides + QR pour vérification terrain)
   app.get('/api/chasse/admin/enigmas', chasseAdminAuth, (req, res) => {
-    res.json({ enigmas: ENIGMAS.map(e => ({ n: e.n, title: e.title || '', qr: e.qr })) });
+    const state = st.get();
+    const ov = state.enigmaOverrides || {};
+    const enigmas = ENIGMAS.map(e => {
+      const o = ov[e.n] || {};
+      return {
+        n:           e.n,
+        title:       o.title !== undefined ? o.title : (e.title || ''),
+        text:        o.text  !== undefined ? o.text  : (e.text  || ''),
+        hint:        o.hint  !== undefined ? o.hint  : (e.hint  || ''),
+        qr:          e.qr,
+        isImageOnly: !!e.isImageOnly,
+        imageRef:    e.imageRef || null,
+        modified:    Object.keys(o).length > 0,
+      };
+    });
+    res.json({ enigmas });
+  });
+
+  // Admin: modifier une énigme (title/text/hint uniquement — QR et images restent fixes)
+  app.post('/api/chasse/admin/enigmas/:n', chasseAdminAuth, (req, res) => {
+    const state = st.get();
+    const n = parseInt(req.params.n, 10);
+    if (!ENIGMAS.find(e => e.n === n)) return res.status(400).json({ error: 'Énigme invalide' });
+    if (!state.enigmaOverrides) state.enigmaOverrides = {};
+    const prev  = state.enigmaOverrides[n] || {};
+    const body  = req.body || {};
+    const patch = {};
+    if (body.title !== undefined) patch.title = String(body.title).slice(0, 120);
+    if (body.text  !== undefined) patch.text  = String(body.text).slice(0, 800);
+    if (body.hint  !== undefined) patch.hint  = String(body.hint).slice(0, 200);
+    state.enigmaOverrides[n] = { ...prev, ...patch };
+    st.save();
+    res.json({ ok: true });
   });
 
   // Admin: liste complète des équipes
@@ -225,7 +257,7 @@ function mountChasse(app) {
       pushNotif('advance', teamId, `🔓 ${t.name} avancée à l'étape ${t.currentStep} (admin)`);
     }
     st.save();
-    const display = currentDisplay(t);
+    const display = currentDisplay(t, state.enigmaOverrides);
     res.json({ ok: true, currentStep: t.currentStep, finished: !!t.finishedAt, display });
   });
 

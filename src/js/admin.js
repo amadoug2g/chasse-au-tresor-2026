@@ -184,21 +184,23 @@ function renderTabEquipes(body, teams) {
 }
 
 /* ---- Énigmes ---- */
-let _enigmaQrData = null;
+let _adminEnigmasData = null; // cache {n,title,text,hint,qr,isImageOnly,imageRef,modified}
 let _adminScanStream = null;
 let _adminScanLoop = null;
+let _enigmaEditOpen = false;
 
-async function _fetchEnigmaQrData() {
-  if (_enigmaQrData) return _enigmaQrData;
+async function _fetchAdminEnigmas(force) {
+  if (_adminEnigmasData && !force) return _adminEnigmasData;
   try {
     const data = await api('/admin/enigmas', { admin: true });
-    _enigmaQrData = data.enigmas || [];
-    return _enigmaQrData;
+    _adminEnigmasData = data.enigmas || [];
+    return _adminEnigmasData;
   } catch(_) { return []; }
 }
 
 function renderTabEnigmes(body) {
-  if (_adminScanStream) return; // Ne pas interrompre un scan en cours
+  if (_adminScanStream) return;   // Ne pas interrompre un scan en cours
+  if (_enigmaEditOpen) return;    // Ne pas interrompre une édition en cours
   if (typeof ENIGMAS_DISPLAY === 'undefined') { body.innerHTML = '<p>Données indisponibles</p>'; return; }
   let html = '<div class="enigma-scan-tester">';
   html += '<div style="font-weight:700;font-size:14px;margin-bottom:10px">🔍 Vérifier un QR code</div>';
@@ -214,20 +216,39 @@ function renderTabEnigmes(body) {
   html += '<div id="adminQrResult" class="enigma-test-result"></div>';
   html += '</div>';
   ENIGMAS_DISPLAY.forEach(e => {
-    html += '<div class="enigma-preview-card">';
-    html += '<div class="enigma-preview-header"><span class="enigma-preview-num">' + e.n + '</span>' + escHTML(e.title || '(image)') + '</div>';
+    html += '<div class="enigma-preview-card" id="enigma-card-' + e.n + '">';
+    html += '<div class="enigma-preview-header">';
+    html += '<span class="enigma-preview-num">' + e.n + '</span>';
+    html += '<span id="enigma-title-display-' + e.n + '">' + escHTML(e.title || '(image)') + '</span>';
+    html += '<button class="enigma-edit-btn" onclick="openEnigmaEdit(' + e.n + ')">✏️</button>';
+    html += '</div>';
     if (e.isImageOnly && e.imageRef) {
       const img = document.getElementById('enigma-img-' + e.imageRef);
       if (img) html += '<img src="' + img.src + '" style="width:100%;border-radius:6px;margin-top:8px" alt="Énigme ' + e.n + '">';
       else html += '<p style="color:var(--text-muted);font-size:13px">Image non trouvée</p>';
-    } else if (e.text) {
-      html += '<div class="enigma-preview-text">' + escHTML(e.text) + '</div>';
+    } else {
+      html += '<div id="enigma-text-display-' + e.n + '" class="enigma-preview-text">' + escHTML(e.text || '') + '</div>';
     }
-    if (e.hint) html += '<div class="enigma-preview-hint">💡 ' + escHTML(e.hint) + '</div>';
+    if (e.hint) html += '<div id="enigma-hint-display-' + e.n + '" class="enigma-preview-hint">💡 ' + escHTML(e.hint) + '</div>';
+    // Formulaire d'édition (caché par défaut)
+    html += '<div id="enigma-edit-' + e.n + '" class="enigma-edit-form" style="display:none">';
+    html += '<label class="enigma-edit-label">Titre</label>';
+    html += '<input id="enigma-f-title-' + e.n + '" class="input-field" type="text" style="margin-bottom:10px;font-size:14px">';
+    if (!e.isImageOnly) {
+      html += '<label class="enigma-edit-label">Texte</label>';
+      html += '<textarea id="enigma-f-text-' + e.n + '" class="enigma-edit-textarea"></textarea>';
+    }
+    html += '<label class="enigma-edit-label">Indice</label>';
+    html += '<input id="enigma-f-hint-' + e.n + '" class="input-field" type="text" style="margin-bottom:12px;font-size:14px">';
+    html += '<div style="display:flex;gap:8px">';
+    html += '<button class="btn btn-primary" style="flex:1" onclick="saveEnigmaEdit(' + e.n + ')">💾 Sauvegarder</button>';
+    html += '<button class="btn btn-secondary" style="flex:1" onclick="closeEnigmaEdit(' + e.n + ')">Annuler</button>';
+    html += '</div><div id="enigma-edit-status-' + e.n + '" style="font-size:13px;margin-top:8px"></div>';
+    html += '</div>';
     html += '</div>';
   });
   body.innerHTML = html;
-  _fetchEnigmaQrData(); // précharge silencieusement
+  _fetchAdminEnigmas(); // précharge silencieusement
 }
 
 async function verifyAdminQr() {
@@ -238,17 +259,66 @@ async function verifyAdminQr() {
   if (!code) { result.textContent = ''; result.className = 'enigma-test-result'; return; }
   result.textContent = '⏳…';
   result.className = 'enigma-test-result';
-  const qrList = await _fetchEnigmaQrData();
+  const qrList = await _fetchAdminEnigmas();
   if (!qrList.length) { result.textContent = '❌ Données inaccessibles'; result.className = 'enigma-test-result error'; return; }
   const found = qrList.find(q => q.qr.toUpperCase() === code.toUpperCase());
   if (found) {
-    const display = (typeof ENIGMAS_DISPLAY !== 'undefined') ? ENIGMAS_DISPLAY.find(e => e.n === found.n) : null;
-    const title   = display && display.title ? ' — ' + escHTML(display.title) : '';
+    const title = found.title ? ' — ' + escHTML(found.title) : '';
     result.innerHTML = '✅ Énigme ' + found.n + title;
     result.className = 'enigma-test-result success';
   } else {
     result.textContent = '❌ Code non reconnu';
     result.className = 'enigma-test-result error';
+  }
+}
+
+async function openEnigmaEdit(n) {
+  const form = document.getElementById('enigma-edit-' + n);
+  if (!form) return;
+  _enigmaEditOpen = true;
+  // Charge les valeurs actuelles (avec overrides éventuels)
+  const list = await _fetchAdminEnigmas();
+  const data = list.find(e => e.n === n) || {};
+  const titleIn = document.getElementById('enigma-f-title-' + n);
+  const textIn  = document.getElementById('enigma-f-text-'  + n);
+  const hintIn  = document.getElementById('enigma-f-hint-'  + n);
+  if (titleIn) titleIn.value = data.title || '';
+  if (textIn)  textIn.value  = data.text  || '';
+  if (hintIn)  hintIn.value  = data.hint  || '';
+  form.style.display = 'block';
+  if (titleIn) titleIn.focus();
+}
+
+function closeEnigmaEdit(n) {
+  const form = document.getElementById('enigma-edit-' + n);
+  if (form) form.style.display = 'none';
+  _enigmaEditOpen = false;
+}
+
+async function saveEnigmaEdit(n) {
+  const titleIn = document.getElementById('enigma-f-title-' + n);
+  const textIn  = document.getElementById('enigma-f-text-'  + n);
+  const hintIn  = document.getElementById('enigma-f-hint-'  + n);
+  const status  = document.getElementById('enigma-edit-status-' + n);
+  const body = {};
+  if (titleIn) body.title = titleIn.value;
+  if (textIn)  body.text  = textIn.value;
+  if (hintIn)  body.hint  = hintIn.value;
+  if (status) { status.textContent = '⏳ Sauvegarde…'; status.style.color = 'var(--text-muted)'; }
+  try {
+    await api('/admin/enigmas/' + n, { method: 'POST', admin: true, body });
+    _adminEnigmasData = null; // invalide le cache
+    // Met à jour les éléments visibles sans re-render complet
+    const titleDisplay = document.getElementById('enigma-title-display-' + n);
+    const textDisplay  = document.getElementById('enigma-text-display-'  + n);
+    const hintDisplay  = document.getElementById('enigma-hint-display-'  + n);
+    if (titleDisplay && titleIn) titleDisplay.textContent = titleIn.value || '(image)';
+    if (textDisplay  && textIn)  textDisplay.textContent  = textIn.value;
+    if (hintDisplay  && hintIn)  hintDisplay.textContent  = hintIn.value ? '💡 ' + hintIn.value : '';
+    if (status) { status.textContent = '✅ Sauvegardé !'; status.style.color = '#16a34a'; }
+    setTimeout(() => closeEnigmaEdit(n), 800);
+  } catch(e) {
+    if (status) { status.textContent = '❌ ' + e.message; status.style.color = 'var(--danger)'; }
   }
 }
 
@@ -262,6 +332,7 @@ async function startAdminScan() {
     area.style.display = 'block';
     const btn = document.getElementById('adminScanBtn');
     if (btn) btn.style.display = 'none';
+    _fetchAdminEnigmas(); // précharge pendant que la caméra démarre
     _adminScanLoop = requestAnimationFrame(_scanAdminFrame);
   } catch(e) {
     const msg = e.name === 'NotAllowedError' ? 'Permission caméra refusée' : 'Caméra indisponible : ' + e.message;
