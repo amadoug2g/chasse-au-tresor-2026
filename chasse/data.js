@@ -55,14 +55,14 @@ const ENIGMAS = [
   {
     n: 6,
     title: 'Les géants de pierre',
-    text: 'Le poteau n°56 veut passer entre deux gros géants de pierre. Réussit-il ?',
+    text: 'Le poteau n°52 veut passer entre deux gros géants de pierre. Réussit-il ?',
     hint: 'Retrouve-moi !',
     qr: 'PILOTES-ENIGME-6',
   },
   {
     n: 7,
     title: 'La jungle',
-    text: 'Le poteau n°54 est perdu dans la jungle. Quels sont les petits fleurs blancs qui l\'entourent ?',
+    text: 'Le poteau n°63 est perdu dans la jungle. Quels sont les petits fleurs blancs qui l\'entourent ?',
     hint: 'Retrouve-moi !',
     qr: 'PILOTES-ENIGME-7',
   },
