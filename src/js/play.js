@@ -5,6 +5,8 @@ async function loadSession() {
     const data = await api('/session/' + state.teamId);
     state.teamName    = data.name;
     state.teamColor   = data.color;
+    state.teamColor2  = data.color2  || null;
+    state.teamPattern = data.pattern || 'solid';
     state.currentStep = data.currentStep;
     state.totalSteps  = data.totalSteps;
     state.finished    = !!data.finished;
@@ -32,7 +34,7 @@ function renderDisplay(display) {
   if (!display) return;
   window._currentDisplay = display;
 
-  document.getElementById('playDot').style.background    = state.teamColor;
+  document.getElementById('playDot').style.background    = colorBg(state.teamColor, state.teamColor2, state.teamPattern);
   document.getElementById('playTeamName').textContent    = state.teamName;
   document.getElementById('playStep').textContent        = display.stepLabel;
   document.getElementById('playProgress').style.transform = 'scaleX(' + (display.progressPct / 100) + ')';
