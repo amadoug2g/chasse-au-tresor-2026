@@ -248,7 +248,21 @@ function renderTabEnigmes(body) {
     html += '</div>';
   });
   body.innerHTML = html;
-  _fetchAdminEnigmas(); // précharge silencieusement
+  _fetchAdminEnigmas().then(_applyEnigmaOverlays);
+}
+
+function _applyEnigmaOverlays(list) {
+  (list || []).forEach(e => {
+    const titleEl = document.getElementById('enigma-title-display-' + e.n);
+    const textEl  = document.getElementById('enigma-text-display-'  + e.n);
+    const hintEl  = document.getElementById('enigma-hint-display-'  + e.n);
+    if (titleEl) titleEl.textContent = e.title || '(image)';
+    if (textEl)  textEl.textContent  = e.text  || '';
+    if (hintEl) {
+      if (e.hint) { hintEl.textContent = '💡 ' + e.hint; hintEl.style.display = ''; }
+      else hintEl.style.display = 'none';
+    }
+  });
 }
 
 async function verifyAdminQr() {
@@ -308,14 +322,8 @@ async function saveEnigmaEdit(n) {
   try {
     await api('/admin/enigmas/' + n, { method: 'POST', admin: true, body });
     _adminEnigmasData = null; // invalide le cache
-    // Met à jour les éléments visibles sans re-render complet
-    const titleDisplay = document.getElementById('enigma-title-display-' + n);
-    const textDisplay  = document.getElementById('enigma-text-display-'  + n);
-    const hintDisplay  = document.getElementById('enigma-hint-display-'  + n);
-    if (titleDisplay && titleIn) titleDisplay.textContent = titleIn.value || '(image)';
-    if (textDisplay  && textIn)  textDisplay.textContent  = textIn.value;
-    if (hintDisplay  && hintIn)  hintDisplay.textContent  = hintIn.value ? '💡 ' + hintIn.value : '';
     if (status) { status.textContent = '✅ Sauvegardé !'; status.style.color = '#16a34a'; }
+    _fetchAdminEnigmas(true).then(_applyEnigmaOverlays); // affiche les nouvelles valeurs
     setTimeout(() => closeEnigmaEdit(n), 800);
   } catch(e) {
     if (status) { status.textContent = '❌ ' + e.message; status.style.color = 'var(--danger)'; }
